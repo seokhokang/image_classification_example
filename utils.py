@@ -16,22 +16,6 @@ def get_augmentation(degree = 30, hshift = 0.3, vshift = 0.3, scale = 0.2, brigh
     
     return augmentation_operator
     
-
-def get_class_adaptive_augmentation(degree = [30] * 10, hshift = [0.3] * 10, vshift = [0.3] * 10, scale = [0.2] * 10, brightness = [0.2] * 10, contrast = [0.2] * 10, prob_hflip = [0.5] * 10, prob_vflip = [0] * 10):
-    
-    augmentation_operator = {}
-    n_class = len(degree)
-    for i in range(n_class):
-        augmentation_operator[i] = T.Compose([
-            T.RandomAffine(degrees = degree[i], translate = (hshift[i], vshift[i]), scale = (1-scale[i], 1+scale[i])),
-            T.ColorJitter(brightness = brightness[i], contrast = contrast[i]),
-            T.RandomHorizontalFlip(prob_hflip[i]),
-            T.RandomVerticalFlip(prob_vflip[i]),
-            T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-        ])
-
-    return augmentation_operator
-    
         
 def get_no_augmentation():
 

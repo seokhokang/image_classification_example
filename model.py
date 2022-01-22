@@ -12,7 +12,7 @@ from torchvision import transforms as T
 from scipy.special import softmax
 from sklearn.metrics import accuracy_score, log_loss
 
-from utils import get_augmentation, get_class_adaptive_augmentation, get_no_augmentation
+from utils import get_augmentation, get_no_augmentation
 
 
 class CNN(nn.Module):
@@ -33,34 +33,10 @@ class CNN(nn.Module):
         return x
 
     
-def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, patience = 20):
+def training(net, trn_loader, val_loader, aug_params, model_path, cuda, max_epochs = 500, patience = 20):
 
-    aug_params = {
-        'degree': 30,
-        'hshift': 0.3,
-        'vshift': 0.3,
-        'scale': 0.3,
-        'brightness': 0.2,
-        'contrast': 0.2,
-        'prob_hflip': 0.5,
-        'prob_vflip': 0
-    }
     trn_augmentation = get_augmentation(**aug_params)
-    
-    """
-    aug_params = {
-        'degree': [0] * 10,
-        'hshift': [0] * 10,
-        'vshift': [0] * 10,
-        'scale': [0] * 10,
-        'brightness': [0] * 10,
-        'contrast': [0] * 10,
-        'prob_hflip': [0] * 10,
-        'prob_vflip': [0] * 10
-    }
-    trn_augmentation = get_class_adaptive_augmentation(**aug_params)
-    """
-    
+
     loss_fn = nn.CrossEntropyLoss(reduction = 'none')
     optimizer = Adam(net.parameters(), lr=1e-3, weight_decay=1e-6)
     lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=10, min_lr=1e-6, verbose=True)
@@ -76,7 +52,6 @@ def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, pa
     
             batch_x, batch_y = batchdata
             batch_x = torch.stack([trn_augmentation(x) for x in batch_x])
-            #batch_x = torch.stack([trn_augmentation[y.item()](x) for x, y in zip(batch_x, batch_y)])
 
             batch_x, batch_y = batch_x.to(cuda), batch_y.to(cuda)
 

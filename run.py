@@ -42,20 +42,60 @@ else:
 if dataset == 'cifar10':
     trnval_set = D.CIFAR10(root='./data/cifar10', train=True, download=True, transform = transform)
     tst_set = D.CIFAR10(root='./data/cifar10', train=False, download=True, transform = transform)
+    aug_params = {
+        'degree': 30,
+        'hshift': 0.3,
+        'vshift': 0.3,
+        'scale': 0.2,
+        'brightness': 0,
+        'contrast': 0,
+        'prob_hflip': 0.5,
+        'prob_vflip': 0
+    }
 
 elif dataset == 'svhn':
     trnval_set = D.SVHN(root='./data/svhn', split='train', download=True, transform = transform)
     tst_set = D.SVHN(root='./data/svhn', split='test', download=True, transform = transform)
     trnval_set.targets = trnval_set.labels
     tst_set.targets = tst_set.labels
+    aug_params = {
+        'degree': 30,
+        'hshift': 0.3,
+        'vshift': 0.3,
+        'scale': 0.2,
+        'brightness': 0,
+        'contrast': 0,
+        'prob_hflip': 0,
+        'prob_vflip': 0
+    }
 
 elif dataset == 'fashionmnist':         
     trnval_set = D.FashionMNIST(root='./data/fashionmnist', train=True, download=True, transform = transform)
     tst_set = D.FashionMNIST(root='./data/fashionmnist', train=False, download=True, transform = transform)
+    aug_params = {
+        'degree': 30,
+        'hshift': 0.3,
+        'vshift': 0.3,
+        'scale': 0.2,
+        'brightness': 0,
+        'contrast': 0,
+        'prob_hflip': 0.5,
+        'prob_vflip': 0
+    }
 
 elif dataset == 'mnist':            
     trnval_set = D.MNIST(root='./data/mnist', train=True, download=True, transform = transform)
     tst_set = D.MNIST(root='./data/mnist', train=False, download=True, transform = transform)
+    aug_params = {
+        'degree': 30,
+        'hshift': 0.3,
+        'vshift': 0.3,
+        'scale': 0.2,
+        'brightness': 0,
+        'contrast': 0,
+        'prob_hflip': 0,
+        'prob_vflip': 0
+    }
 
 else:
     raise Expection
@@ -79,7 +119,7 @@ net = CNN(len(classes)).to(cuda)
 if use_trained == True:
     net.load_state_dict(torch.load(model_path))
 else:
-    net = training(net, trn_loader, val_loader, model_path, cuda)
+    net = training(net, trn_loader, val_loader, aug_params, model_path, cuda)
 
 ## test
 tst_y = np.array(tst_set.targets)
