@@ -47,8 +47,7 @@ if dataset == 'cifar10':
         'hshift': 0.3,
         'vshift': 0.3,
         'scale': 0.2,
-        'brightness': 0,
-        'contrast': 0,
+        'shear': 15,
         'prob_hflip': 0.5,
         'prob_vflip': 0
     }
@@ -63,8 +62,7 @@ elif dataset == 'svhn':
         'hshift': 0.3,
         'vshift': 0.3,
         'scale': 0.2,
-        'brightness': 0,
-        'contrast': 0,
+        'shear': 15,
         'prob_hflip': 0,
         'prob_vflip': 0
     }
@@ -77,8 +75,7 @@ elif dataset == 'fashionmnist':
         'hshift': 0.3,
         'vshift': 0.3,
         'scale': 0.2,
-        'brightness': 0,
-        'contrast': 0,
+        'shear': 15,
         'prob_hflip': 0.5,
         'prob_vflip': 0
     }
@@ -91,8 +88,7 @@ elif dataset == 'mnist':
         'hshift': 0.3,
         'vshift': 0.3,
         'scale': 0.2,
-        'brightness': 0,
-        'contrast': 0,
+        'shear': 15,
         'prob_hflip': 0,
         'prob_vflip': 0
     }
