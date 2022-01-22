@@ -12,7 +12,7 @@ from torchvision import transforms as T
 from scipy.special import softmax
 from sklearn.metrics import accuracy_score, log_loss
 
-from utils import get_data_augmentation, get_no_augmentation
+from utils import get_trn_augmentation, get_tst_augmentation
 
 
 class CNN(nn.Module):
@@ -35,7 +35,7 @@ class CNN(nn.Module):
     
 def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, patience = 20):
     
-    data_augmentation = get_data_augmentation()
+    trn_augmentation = get_trn_augmentation()
     
     loss_fn = nn.CrossEntropyLoss(reduction = 'none')
     optimizer = Adam(net.parameters(), lr=1e-3, weight_decay=1e-6)
@@ -53,7 +53,7 @@ def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, pa
             batch_x, batch_y = batchdata
             batch_x, batch_y = batch_x.to(cuda), batch_y.to(cuda)
             
-            batch_x = data_augmentation(batch_x)
+            batch_x = torch.stack([trn_augmentation(x) for x in batch_x])
             
             batch_y_hat = net(batch_x)
     
@@ -91,7 +91,7 @@ def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, pa
   
 def inference(net, tst_loader, cuda):
 
-    no_augmentation = get_no_augmentation()
+    tst_augmentation = get_tst_augmentation()
     
     net.eval()
 
@@ -102,7 +102,7 @@ def inference(net, tst_loader, cuda):
             batch_x = batchdata[0].to(cuda)
             batch_y = batchdata[1].numpy()
             
-            batch_x = no_augmentation(batch_x)
+            batch_x = torch.stack([tst_augmentation(x) for x in batch_x])
     
             batch_y_score = net(batch_x).cpu().numpy()
     
