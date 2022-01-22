@@ -12,7 +12,7 @@ from torchvision import transforms as T
 from scipy.special import softmax
 from sklearn.metrics import accuracy_score, log_loss
 
-from utils import get_trn_augmentation, get_class_adaptive_trn_augmentation, get_tst_augmentation
+from utils import get_augmentation, get_class_adaptive_augmentation, get_no_augmentation
 
 
 class CNN(nn.Module):
@@ -34,38 +34,31 @@ class CNN(nn.Module):
 
     
 def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, patience = 20):
-    
-    degree, hshift, vshift, scale, brightness, contrast, prob_hflip, prob_vflip = 30, 0.3, 0.3, 0.2, 0.2, 0.2, 0.5, 0
-    trn_augmentation = get_trn_augmentation(
-                           degree = degree,
-                           hshift = hshift,
-                           vshift = vshift,
-                           scale = scale,
-                           brightness = brightness,
-                           contrast = contrast,
-                           prob_hflip = prob_hflip,
-                           prob_vflip = prob_vflip
-    )
+
+    aug_params = {
+        'degree': 30,
+        'hshift': 0.3,
+        'vshift': 0.3,
+        'scale': 0.3,
+        'brightness': 0.2,
+        'contrast': 0.2,
+        'prob_hflip': 0.5,
+        'prob_vflip': 0
+    }
+    trn_augmentation = get_augmentation(**aug_params)
     
     """
-    degree_list = [0] * 10
-    hshift_list = [0] * 10
-    vshift_list = [0] * 10
-    scale_list = [0] * 10
-    brightness_list = [0] * 10
-    contrast_list = [0] * 10
-    prob_hflip_list = [0] * 10
-    prob_vflip_list = [0] * 10
-    trn_augmentation = get_class_adaptive_trn_augmentation(
-                           degree = degree_list,
-                           hshift = hshift_list,
-                           vshift = vshift_list,
-                           scale = scale_list,
-                           brightness = brightness_list,
-                           contrast = contrast_list,
-                           prob_hflip = prob_hflip_list,
-                           prob_vflip = prob_vflip_list
-    )
+    aug_params = {
+        'degree': [0] * 10,
+        'hshift': [0] * 10,
+        'vshift': [0] * 10,
+        'scale': [0] * 10,
+        'brightness': [0] * 10,
+        'contrast': [0] * 10,
+        'prob_hflip': [0] * 10,
+        'prob_vflip': [0] * 10
+    }
+    trn_augmentation = get_class_adaptive_augmentation(**aug_params)
     """
     
     loss_fn = nn.CrossEntropyLoss(reduction = 'none')
@@ -125,7 +118,7 @@ def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, pa
   
 def inference(net, tst_loader, cuda):
 
-    tst_augmentation = get_tst_augmentation()
+    tst_augmentation = get_no_augmentation()
     
     net.eval()
 
