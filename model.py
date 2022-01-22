@@ -35,8 +35,38 @@ class CNN(nn.Module):
     
 def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, patience = 20):
     
-    #trn_augmentation = get_trn_augmentation()
-    trn_augmentation = get_class_adaptive_trn_augmentation()
+    degree, hshift, vshift, scale, brightness, contrast, prob_hflip, prob_vflip = 30, 0.3, 0.3, 0.2, 0.2, 0.2, 0.5, 0
+    trn_augmentation = get_trn_augmentation(
+                           degree = degree,
+                           hshift = hshift,
+                           vshift = vshift,
+                           scale = scale,
+                           brightness = brightness,
+                           contrast = contrast,
+                           prob_hflip = prob_hflip,
+                           prob_vflip = prob_vflip
+    )
+    
+    """
+    degree_list = [0] * 10
+    hshift_list = [0] * 10
+    vshift_list = [0] * 10
+    scale_list = [0] * 10
+    brightness_list = [0] * 10
+    contrast_list = [0] * 10
+    prob_hflip_list = [0] * 10
+    prob_vflip_list = [0] * 10
+    trn_augmentation = get_class_adaptive_trn_augmentation(
+                           degree = degree_list,
+                           hshift = hshift_list,
+                           vshift = vshift_list,
+                           scale = scale_list,
+                           brightness = brightness_list,
+                           contrast = contrast_list,
+                           prob_hflip = prob_hflip_list,
+                           prob_vflip = prob_vflip_list
+    )
+    """
     
     loss_fn = nn.CrossEntropyLoss(reduction = 'none')
     optimizer = Adam(net.parameters(), lr=1e-3, weight_decay=1e-6)
@@ -52,10 +82,10 @@ def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, pa
         for batchidx, batchdata in enumerate(trn_loader):
     
             batch_x, batch_y = batchdata
+            batch_x = torch.stack([trn_augmentation(x) for x in batch_x])
+            #batch_x = torch.stack([trn_augmentation[y.item()](x) for x, y in zip(batch_x, batch_y)])
+
             batch_x, batch_y = batch_x.to(cuda), batch_y.to(cuda)
-            
-            #batch_x = torch.stack([trn_augmentation(x) for x in batch_x])
-            batch_x = torch.stack([trn_augmentation[y.item()](x) for x, y in zip(batch_x, batch_y)])
 
             batch_y_hat = net(batch_x)
     
@@ -102,10 +132,10 @@ def inference(net, tst_loader, cuda):
         for batchidx, batchdata in enumerate(tst_loader):
             
             batch_x, batch_y = batchdata
+            batch_x = torch.stack([tst_augmentation(x) for x in batch_x])
+            
             batch_x = batch_x.to(cuda)
             batch_y = batch_y.numpy()
-            
-            batch_x = torch.stack([tst_augmentation(x) for x in batch_x])
 
             batch_y_score = net(batch_x).cpu().numpy()
     

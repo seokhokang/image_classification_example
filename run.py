@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 
 import torch
@@ -12,7 +13,7 @@ from scipy.special import softmax
 from sklearn.metrics import accuracy_score, log_loss
 
 
-dataset = 'cifar10'
+dataset = sys.argv[1]
 model_path = './model_%s.pt'%dataset
 batch_size = 64
 
@@ -41,7 +42,7 @@ elif dataset == 'fashionmnist':
     trnval_set = D.FashionMNIST(root='./data/fashionmnist', train=True, download=True, transform = transform)
     tst_set = D.FashionMNIST(root='./data/fashionmnist', train=False, download=True, transform = transform)
         
-elif dataset == 'mnist':      
+elif dataset == 'mnist':
     transform = T.Compose([
         T.ToTensor(),
         T.Lambda(lambda x: torch.cat([x, x, x], 0)), 
