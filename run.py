@@ -16,6 +16,7 @@ from sklearn.metrics import accuracy_score, log_loss
 dataset = sys.argv[1]
 use_trained = False
 model_path = './model_%s.pt'%dataset
+frac_val = 0.1
 batch_size = 64
 seed = 42
 
@@ -61,7 +62,7 @@ else:
 
 
 classes = np.unique(trnval_set.targets)
-val_size = int(0.2 * len(trnval_set))
+val_size = int(frac_val * len(trnval_set))
 trn_size = len(trnval_set) - val_size
 trn_set, val_set = random_split(trnval_set, [trn_size, val_size], generator=torch.Generator().manual_seed(seed))
 
