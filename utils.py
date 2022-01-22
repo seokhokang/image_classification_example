@@ -4,7 +4,7 @@ from torch import nn
 from torchvision import transforms as T
 
 
-def get_trn_augmentation(degree = 30, hshift = 0.3, vshift = 0.3, scale = 0.2, brightness = 0.2, contrast = 0.2, prob_hflip = 0.5, prob_vflip = 0):
+def get_augmentation(degree = 30, hshift = 0.3, vshift = 0.3, scale = 0.2, brightness = 0.2, contrast = 0.2, prob_hflip = 0.5, prob_vflip = 0):
     
     augmentation_operator = T.Compose([
         T.RandomAffine(degrees = degree, translate = (hshift, vshift), scale = (1-scale, 1+scale)),
@@ -17,7 +17,7 @@ def get_trn_augmentation(degree = 30, hshift = 0.3, vshift = 0.3, scale = 0.2, b
     return augmentation_operator
     
 
-def get_class_adaptive_trn_augmentation(degree = [30] * 10, hshift = [0.3] * 10, vshift = [0.3] * 10, scale = [0.2] * 10, brightness = [0.2] * 10, contrast = [0.2] * 10, prob_hflip = [0.5] * 10, prob_vflip = [0] * 10):
+def get_class_adaptive_augmentation(degree = [30] * 10, hshift = [0.3] * 10, vshift = [0.3] * 10, scale = [0.2] * 10, brightness = [0.2] * 10, contrast = [0.2] * 10, prob_hflip = [0.5] * 10, prob_vflip = [0] * 10):
     
     augmentation_operator = {}
     n_class = len(degree)
@@ -33,7 +33,7 @@ def get_class_adaptive_trn_augmentation(degree = [30] * 10, hshift = [0.3] * 10,
     return augmentation_operator
     
         
-def get_tst_augmentation():
+def get_no_augmentation():
 
     augmentation_operator = T.Compose([
         T.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
