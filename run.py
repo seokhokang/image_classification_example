@@ -17,6 +17,7 @@ dataset = sys.argv[1]
 use_trained = False
 model_path = './model_%s.pt'%dataset
 batch_size = 64
+seed = 42
 
 
 ## transform
@@ -62,7 +63,7 @@ else:
 classes = np.unique(trnval_set.targets)
 val_size = int(0.2 * len(trnval_set))
 trn_size = len(trnval_set) - val_size
-trn_set, val_set = random_split(trnval_set, [trn_size, val_size])
+trn_set, val_set = random_split(trnval_set, [trn_size, val_size], generator=torch.Generator().manual_seed(seed))
 
 print('trn/val/tst = %d/%d/%d'%(len(trn_set), len(val_set), len(tst_set)))
 
