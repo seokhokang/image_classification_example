@@ -19,40 +19,45 @@ model_path = './model_%s.pt'%dataset
 batch_size = 64
 
 
-## data
-if dataset == 'cifar10':
+## transform
+if dataset in ['cifar10', 'svhn']:
     transform = T.Compose([
         T.ToTensor()
     ])
+
+elif dataset in ['fashionmnist', 'mnist']:
+    transform = T.Compose([
+        T.ToTensor(),
+        T.Lambda(lambda x: torch.cat([x, x, x], 0)), 
+        T.Resize((32, 32))
+    ])
+    
+else:
+    raise Expection
+
+
+## data
+if dataset == 'cifar10':
     trnval_set = D.CIFAR10(root='./data/cifar10', train=True, download=True, transform = transform)
     tst_set = D.CIFAR10(root='./data/cifar10', train=False, download=True, transform = transform)
 
 elif dataset == 'svhn':
-    transform = T.Compose([
-        T.ToTensor()
-    ])
     trnval_set = D.SVHN(root='./data/svhn', split='train', download=True, transform = transform)
     tst_set = D.SVHN(root='./data/svhn', split='test', download=True, transform = transform)
     trnval_set.targets = trnval_set.labels
     tst_set.targets = tst_set.labels
 
-elif dataset == 'fashionmnist':      
-    transform = T.Compose([
-        T.ToTensor(),
-        T.Lambda(lambda x: torch.cat([x, x, x], 0)), 
-        T.Resize((32, 32))
-    ])                
+elif dataset == 'fashionmnist':         
     trnval_set = D.FashionMNIST(root='./data/fashionmnist', train=True, download=True, transform = transform)
     tst_set = D.FashionMNIST(root='./data/fashionmnist', train=False, download=True, transform = transform)
 
-elif dataset == 'mnist':
-    transform = T.Compose([
-        T.ToTensor(),
-        T.Lambda(lambda x: torch.cat([x, x, x], 0)), 
-        T.Resize((32, 32))
-    ])                
+elif dataset == 'mnist':            
     trnval_set = D.MNIST(root='./data/mnist', train=True, download=True, transform = transform)
     tst_set = D.MNIST(root='./data/mnist', train=False, download=True, transform = transform)
+
+else:
+    raise Expection
+
 
 classes = np.unique(trnval_set.targets)
 val_size = int(0.2 * len(trnval_set))
