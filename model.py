@@ -119,6 +119,8 @@ def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, pa
     
     print('training terminated at epoch %d' %epoch)
     net.load_state_dict(torch.load(model_path))
+    
+    return net
 
   
 def inference(net, tst_loader, cuda):
