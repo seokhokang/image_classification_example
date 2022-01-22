@@ -98,10 +98,10 @@ def training(net, trn_loader, val_loader, model_path, cuda, max_epochs = 500, pa
         val_loss = log_loss(val_y, softmax(val_y_score, 1), labels = list(range(val_y_score.shape[1])))
         val_acc = accuracy_score(val_y, val_y_hat)
     
-        val_log[epoch] = val_loss
-        print('--- validation epoch %d, processed %d, current loss %.4f, acc %.4f, best loss %.4f, time elapsed(min) %.2f' %(epoch, len(val_loader.dataset), val_loss, val_acc, np.min(val_log[:epoch + 1]), (time.time()-start_time)/60))
+        val_log[epoch] = - val_acc
+        print('--- validation epoch %d, processed %d, current loss %.4f, acc %.4f, best %.4f, time elapsed(min) %.2f' %(epoch, len(val_loader.dataset), val_loss, val_acc, - np.min(val_log[:epoch + 1]), (time.time()-start_time)/60))
     
-        lr_scheduler.step(val_loss)
+        lr_scheduler.step(- val_acc)
     
         # earlystopping
         if np.argmin(val_log[:epoch + 1]) == epoch:
