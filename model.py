@@ -103,9 +103,7 @@ def inference(net, tst_loader, cuda):
             
             batch_x, batch_y = batchdata
             batch_x = torch.stack([tst_augmentation(x) for x in batch_x])
-            
             batch_x = batch_x.to(cuda)
-            batch_y = batch_y.numpy()
 
             batch_y_score = net(batch_x).cpu().numpy()
     
