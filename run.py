@@ -9,8 +9,7 @@ from torchvision import transforms as T
 
 from model import CNN, training, inference
 
-from scipy.special import softmax
-from sklearn.metrics import accuracy_score, log_loss
+from sklearn.metrics import accuracy_score
 
 
 dataset = sys.argv[1]
