@@ -70,7 +70,7 @@ def training(net, trn_loader, val_loader, aug_params, model_path, cuda, max_epoc
         # validation
         val_y_score, val_y_hat = inference(net, val_loader, cuda)
 
-        val_loss = log_loss(val_y, softmax(val_y_score, 1), labels = list(range(val_y_score.shape[1])))
+        val_loss = log_loss(val_y, val_y_score, labels = list(range(val_y_score.shape[1])))
         val_acc = accuracy_score(val_y, val_y_hat)
     
         val_log[epoch] = - val_acc
@@ -109,7 +109,7 @@ def inference(net, tst_loader, cuda):
     
             tst_y_score.append(batch_y_score)
     
-    tst_y_score = np.vstack(tst_y_score)
+    tst_y_score = softmax(np.vstack(tst_y_score), 1)
     tst_y_hat = np.argmax(tst_y_score, 1)
     
     return tst_y_score, tst_y_hat
