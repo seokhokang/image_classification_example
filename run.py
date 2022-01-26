@@ -23,12 +23,10 @@ seed = 42
 ## transform
 if dataset in ['cifar10', 'svhn']:
     transform = T.Compose([
-        T.ToTensor()
     ])
 
 elif dataset in ['fashionmnist', 'mnist']:
     transform = T.Compose([
-        T.ToTensor(),
         T.Lambda(lambda x: torch.cat([x, x, x], 0)), 
         T.Resize((32, 32))
     ])
