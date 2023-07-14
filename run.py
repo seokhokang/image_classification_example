@@ -34,7 +34,7 @@ elif dataset in ['fashionmnist', 'mnist']:
     ])
     
 else:
-    raise Expection
+    raise Exception
 
 
 ## data
