@@ -93,7 +93,7 @@ elif dataset == 'mnist':
     }
 
 else:
-    raise Expection
+    raise Exception
 
 
 classes = np.unique(trnval_set.targets)
